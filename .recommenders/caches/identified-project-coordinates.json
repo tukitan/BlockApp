@@ -1,0 +1,1 @@
+[[{"location":"/usr/lib/jvm/jdk1.8.0","type":"JRE","hints":{"EXECUTION_ENVIRONMENT":"JavaSE-1.8"}},"jre:jre:1.8.0"],[{"location":"/home/tukitan/BlockApp/BlockApplication","type":"PROJECT","hints":{"PROJECT_NAME":"BlockApplication"}},"ABSENT"],[{"location":"/home/tukitan/BlockApp/twitter4j-core-4.0.4.jar","type":"JAR","hints":{}},"org.twitter4j:twitter4j-core:4.0.4"]]
