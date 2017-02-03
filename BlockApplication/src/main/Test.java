@@ -2,12 +2,14 @@ package main;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.xml.ws.Response;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 
 import twitter4j.IDs;
 import twitter4j.PagableResponseList;
+import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.TweetEntity;
 import twitter4j.Twitter;
@@ -22,10 +24,11 @@ class Test {
 	ConfigurationBuilder cb;
 	Twitter twitter;
 	User user;
+	static ResponseList<Status> tl; 
     public static void main(String args[]) throws TwitterException{
     	 Test tst = new Test();
     	 tst.getFollowerList();
-    	 GUIManager gui = new GUIManager("BinBinFestival",tst.twitter);
+    	 GUIManager gui = new GUIManager("BinBinFestival",tst.twitter,tst.user);
         //ついーとしてみる
         //Status status = tst.twitter.updateStatus("男ならvia BinBinFestival");
         
