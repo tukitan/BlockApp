@@ -19,7 +19,6 @@ import twitter4j.User;
 import twitter4j.UserList;
 import twitter4j.conf.ConfigurationBuilder;
 
-
 class Test {
 	ConfigurationBuilder cb;
 	Twitter twitter;
