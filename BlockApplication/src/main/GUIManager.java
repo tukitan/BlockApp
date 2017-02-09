@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -20,6 +21,8 @@ import javax.swing.JTextField;
 import javax.swing.RepaintManager;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+
+import org.omg.CORBA.ParameterModeHelper;
 
 import twitter4j.Paging;
 import twitter4j.ResponseList;
@@ -46,23 +49,25 @@ public class GUIManager {
 		exFrame.setVisible(true);
 	}
 	
-	private void makeLayout(int type) throws TwitterException{
+	private synchronized void makeLayout(int type) throws TwitterException{
 		switch (type) {
 		case TYPE_DEFAULT:
+			// GUI周り
 			JPanel leftFrame = new JPanel();
 			leftFrame.setLayout(new BoxLayout(leftFrame,BoxLayout.Y_AXIS));
-			JTextArea[] list = new JTextArea[20];
+			JTextArea[] list = new JTextArea[10];
 			JTextArea debugField = new JTextArea();
 			JPanel rightFrame = new JPanel();
 			rightFrame.setLayout(new BoxLayout(rightFrame,BoxLayout.Y_AXIS));
-			JScrollPane jScrollPane = new JScrollPane(rightFrame);
+			JScrollPane jScrollPane = new JScrollPane();
 			debugField.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 			debugField.setEditable(false);
 			debugField.setFont(new Font("メイリオ",Font.PLAIN,15));
+			debugField.setLineWrap(true);
 			for(int i=0;i<list.length;i++) {
-
-				list[i]=new JTextArea(5,60);
+				list[i]=new JTextArea(20,60);
 				list[i].setLineWrap(true);
+				list[i].setBorder(new EtchedBorder(EtchedBorder.RAISED));
 			}
 			tweetButton = new JButton("TWEET");
 			tweetButton.addActionListener(new ActionListener() {
@@ -90,22 +95,28 @@ public class GUIManager {
 			(new Thread(new Runnable() {
 				@Override
 				public void run() {
+					Paging page = null;
+					ResponseList<Status> tl = null;
+					long lastStatus=0;
 					Status pastStatus = null;
 					int cnt=0;
 					try {
 						while(true){
 							if(twitter!=null) {
 								try{
-									ResponseList<Status> tl = twitter.getHomeTimeline();
+									if(page==null) {
+										page = new Paging(1,10);
+									}
+									else page = new Paging(lastStatus);
+									tl = twitter.getHomeTimeline(page);
+									lastStatus = tl.get(0).getId();
 									for(Status each:tl){
-										if(pastStatus==tl.get(cnt)) break;
 										System.out.println(each.getText());
 										list[cnt].setText(each.getText());
 										list[cnt].setFont(new Font("メイリオ",Font.PLAIN,15));
 										rightFrame.add(list[cnt]);
 										cnt++;
 									}
-									pastStatus= tl.get(cnt-1);
 									cnt=0;
 									tl.clear();
 								} catch (Exception e){
@@ -131,6 +142,4 @@ public class GUIManager {
 			break;
 		}
 	}
-	
-
 }

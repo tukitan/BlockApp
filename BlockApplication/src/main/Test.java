@@ -26,7 +26,7 @@ class Test {
 	static ResponseList<Status> tl; 
     public static void main(String args[]) throws TwitterException{
     	 Test tst = new Test();
-    	 tst.getFollowerList();
+    	 //tst.getFollowerList();
     	 GUIManager gui = new GUIManager("BinBinFestival",tst.twitter,tst.user);
         //ついーとしてみる
         //Status status = tst.twitter.updateStatus("男ならvia BinBinFestival");
