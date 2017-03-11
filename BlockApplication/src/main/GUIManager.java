@@ -42,9 +42,10 @@ public class GUIManager {
 
 	public GUIManager(String title,Twitter twitter,User user) throws TwitterException{
 		exFrame = new ExpandFrame(600,400,title);
-		makeLayout(TYPE_DEFAULT);
 		this.twitter=twitter;
 		this.user=user;
+		makeLayout(TYPE_DEFAULT);
+
 		exFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		exFrame.setVisible(true);
 	}
@@ -55,7 +56,6 @@ public class GUIManager {
 			// GUI周り
 			JPanel leftFrame = new JPanel();
 			leftFrame.setLayout(new BoxLayout(leftFrame,BoxLayout.Y_AXIS));
-			JTextArea[] list = new JTextArea[10];
 			JTextArea debugField = new JTextArea();
 			JPanel rightFrame = new JPanel();
 			rightFrame.setLayout(new BoxLayout(rightFrame,BoxLayout.Y_AXIS));
@@ -64,11 +64,6 @@ public class GUIManager {
 			debugField.setEditable(false);
 			debugField.setFont(new Font("メイリオ",Font.PLAIN,15));
 			debugField.setLineWrap(true);
-			for(int i=0;i<list.length;i++) {
-				list[i]=new JTextArea(20,60);
-				list[i].setLineWrap(true);
-				list[i].setBorder(new EtchedBorder(EtchedBorder.RAISED));
-			}
 			tweetButton = new JButton("TWEET");
 			tweetButton.addActionListener(new ActionListener() {
 				@Override
@@ -92,48 +87,8 @@ public class GUIManager {
 			leftFrame.add(debugField);
 			text.setFont(new Font("メイリオ",Font.PLAIN,20));
 
-			(new Thread(new Runnable() {
-				@Override
-				public void run() {
-					Paging page = null;
-					ResponseList<Status> tl = null;
-					long lastStatus=0;
-					Status pastStatus = null;
-					int cnt=0;
-					try {
-						while(true){
-							if(twitter!=null) {
-								try{
-									if(page==null) {
-										page = new Paging(1,10);
-									}
-									else page = new Paging(lastStatus);
-									tl = twitter.getHomeTimeline(page);
-									lastStatus = tl.get(0).getId();
-									for(Status each:tl){
-										System.out.println(each.getText());
-										list[cnt].setText(each.getText());
-										list[cnt].setFont(new Font("メイリオ",Font.PLAIN,15));
-										rightFrame.add(list[cnt]);
-										cnt++;
-									}
-									cnt=0;
-									tl.clear();
-								} catch (Exception e){
-									e.printStackTrace();
-									debugField.setText(e.getMessage());
-									debugField.setCaretPosition(0);
-									exFrame.repaint();
-								}
-							}
-							exFrame.repaint();
-							Thread.sleep(60000);
-						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			})).start();
+			GetTimeline tlThread = new GetTimeline(twitter, exFrame, rightFrame);
+			tlThread.start();
 			exFrame.add(tweetButton,BorderLayout.SOUTH);
 			exFrame.add(leftFrame,BorderLayout.CENTER);
 			exFrame.add(rightFrame,BorderLayout.EAST);
