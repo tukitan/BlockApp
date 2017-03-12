@@ -16,17 +16,18 @@ public class GetTimeline extends Thread {
 	private Twitter twitter;
 	private ExpandFrame exFrame;
 	private JPanel rightFrame;
+	private JTextArea debugField;
 
-	public GetTimeline(Twitter twitter,ExpandFrame exframe,JPanel rightFrame){
+	public GetTimeline(Twitter twitter,ExpandFrame exframe,JPanel rightFrame,JTextArea debugField){
 		
 		this.twitter = twitter;
 		this.exFrame = exframe;
 		this.rightFrame = rightFrame;
+		this.debugField = debugField;
 	}
 	
 	public void run(){
 		JTextArea[] list = new JTextArea[10];
-		JTextArea debugField = new JTextArea();
 		Paging page = null;
 		ResponseList<Status> tl = null;
 		long lastStatus=0;
@@ -39,11 +40,7 @@ public class GetTimeline extends Thread {
 		try {
 			while(true){
 				try{
-					if(page==null) {
-						page = new Paging(1,10);
-					}
-					else page = new Paging(lastStatus);
-					tl = twitter.getHomeTimeline(page);
+					tl = twitter.getHomeTimeline();
 
 					for(Status each:tl){
 						System.out.println(each.getText());
@@ -51,6 +48,7 @@ public class GetTimeline extends Thread {
 						list[cnt].setFont(new Font("メイリオ",Font.PLAIN,15));
 						rightFrame.add(list[cnt]);
 						cnt++;
+						if(cnt==10) break;
 					}
 					cnt=0;
 					tl.clear();

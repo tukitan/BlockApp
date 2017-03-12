@@ -87,7 +87,7 @@ public class GUIManager {
 			leftFrame.add(debugField);
 			text.setFont(new Font("メイリオ",Font.PLAIN,20));
 
-			GetTimeline tlThread = new GetTimeline(twitter, exFrame, rightFrame);
+			GetTimeline tlThread = new GetTimeline(twitter, exFrame, rightFrame,debugField);
 			tlThread.start();
 			exFrame.add(tweetButton,BorderLayout.SOUTH);
 			exFrame.add(leftFrame,BorderLayout.CENTER);
