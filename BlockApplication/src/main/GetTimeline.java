@@ -30,6 +30,7 @@ public class GetTimeline extends Thread {
 		JTextArea[] list = new JTextArea[10];
 		Paging page = null;
 		ResponseList<Status> tl = null;
+		String printTweet;
 		long lastStatus=0;
 		int cnt=0;
 		for(int i=0;i<list.length;i++) {
@@ -43,8 +44,11 @@ public class GetTimeline extends Thread {
 					tl = twitter.getHomeTimeline();
 
 					for(Status each:tl){
-						System.out.println(each.getText());
-						list[cnt].setText(each.getText());
+						printTweet = each.getUser().getName()+
+								" @"+each.getUser().getScreenName()+
+								"\n"+each.getText();
+						System.out.println(printTweet);
+						list[cnt].setText(printTweet);
 						list[cnt].setFont(new Font("メイリオ",Font.PLAIN,15));
 						rightFrame.add(list[cnt]);
 						cnt++;
